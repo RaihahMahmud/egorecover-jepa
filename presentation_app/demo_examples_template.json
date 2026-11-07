@@ -1,0 +1,26 @@
+{
+  "examples": [
+    {
+      "example_id": "sample_correct",
+      "title": "Example A — correct or mostly correct",
+      "video_id": "PXX_YY",
+      "narration_id": "optional annotation id",
+      "clip_file": "sample_correct.mp4",
+      "observation_start": 10.0,
+      "observation_end": 14.0,
+      "anticipation_gap_seconds": 1.0,
+      "ground_truth": {
+        "verb": "replace with ground truth verb",
+        "noun": "replace with ground truth noun",
+        "action": "replace with ground truth action"
+      },
+      "predictions": {
+        "verb": ["top prediction", "second prediction", "third prediction"],
+        "noun": ["top prediction", "second prediction", "third prediction"],
+        "action": ["top prediction", "second prediction", "third prediction"]
+      },
+      "note": "Replace all example values with labels from a saved prediction."
+    }
+  ]
+}
+
