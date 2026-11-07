@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+.streamlit/secrets.toml
+user_data/
+user_media/
+demo_clips/*.mp4
+demo_clips/*.mov
+demo_clips/*.webm
+results of training experiment/
+*.pt
+*.pth
+*.safetensors
+*.zip
+
