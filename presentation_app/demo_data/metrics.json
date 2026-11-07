@@ -1,0 +1,21 @@
+{
+  "verb": {
+    "top5_accuracy_percent": 61.470588235294116,
+    "class_mean_recall_at5_percent": 22.61904761904762,
+    "examples": 340,
+    "classes_seen": 21
+  },
+  "noun": {
+    "top5_accuracy_percent": 14.117647058823529,
+    "class_mean_recall_at5_percent": 8.19672131147541,
+    "examples": 340,
+    "classes_seen": 61
+  },
+  "action": {
+    "top5_accuracy_percent": 7.352941176470588,
+    "class_mean_recall_at5_percent": 2.547770700636943,
+    "examples": 340,
+    "classes_seen": 157
+  }
+}
+
