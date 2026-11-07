@@ -27,16 +27,35 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-      .block-container {max-width: 1450px; padding-top: 1.4rem; padding-bottom: 2rem;}
-      .hero {padding: 1.4rem 1.6rem; border-radius: 18px; color: #f8fafc;
-              background: linear-gradient(115deg, #0f172a 0%, #173a5e 58%, #256b73 100%);}
-      .hero h1 {margin: 0 0 .35rem 0; font-size: 2.15rem;}
-      .hero p {margin: .25rem 0; color: #dbeafe;}
-      .scope {padding: .8rem 1rem; border-left: 5px solid #e59c28; background: #fff8e8;
-              border-radius: 8px; color: #47330f; margin: .7rem 0 1rem 0;}
-      .small-note {color: #64748b; font-size: .9rem;}
-      div[data-testid="stMetric"] {background: #f8fafc; padding: .8rem 1rem; border-radius: 12px;
-                                    border: 1px solid #e2e8f0;}
+      :root { --ink:#122238; --muted:#63758b; --line:#e4ebf3; --blue:#3578b8; --teal:#237e79; }
+      .stApp {background: radial-gradient(ellipse at 12% 0%, #edf5ff 0%, #f8fafc 38%, #ffffff 82%);}
+      .block-container {max-width: 1450px; padding-top: 1.15rem; padding-bottom: 3rem;}
+      .hero {position:relative; overflow:hidden; padding:1.75rem 1.85rem; border-radius:22px;
+             color:#f8fafc; background:linear-gradient(112deg,#101c32 0%,#173a5e 52%,#287d78 100%);
+             box-shadow:0 18px 42px rgba(23,58,94,.18); animation:hero-in .65s ease-out both;}
+      .hero:after {content:""; position:absolute; width:260px; height:260px; right:-70px; top:-125px;
+                   border:1px solid rgba(255,255,255,.22); border-radius:50%;
+                   box-shadow:0 0 0 25px rgba(255,255,255,.035),0 0 0 52px rgba(255,255,255,.025);}
+      .hero h1 {position:relative; z-index:1; margin:0 0 .45rem 0; font-size:2.45rem; letter-spacing:-.035em;}
+      .hero p {position:relative; z-index:1; margin:.28rem 0; color:#dbeafe;}
+      .hero-kicker {font-size:.78rem; letter-spacing:.15em; font-weight:700; text-transform:uppercase; opacity:.82;}
+      .scope {padding:.9rem 1.05rem; border:1px solid #f4d795; border-left:5px solid #e59c28;
+              background:linear-gradient(100deg,#fff7e5,#fffaf0); border-radius:12px; color:#47330f;
+              margin:.8rem 0 1.25rem 0; box-shadow:0 6px 18px rgba(130,87,14,.05);}
+      .small-note {color:var(--muted); font-size:.9rem;}
+      div[data-testid="stMetric"] {background:rgba(255,255,255,.88); padding:.95rem 1.05rem;
+              border-radius:16px; border:1px solid var(--line); box-shadow:0 5px 18px rgba(30,58,90,.045);
+              transition:transform .18s ease, box-shadow .18s ease;}
+      div[data-testid="stMetric"]:hover {transform:translateY(-3px); box-shadow:0 12px 24px rgba(30,58,90,.10);}
+      div[data-testid="stMetricLabel"] {color:#52667d;}
+      div[data-testid="stMetricValue"] {color:var(--ink); font-weight:650;}
+      button[data-baseweb="tab"] {font-weight:600;}
+      div[data-testid="stTabs"] div[role="tablist"] {gap:.3rem; border-bottom:1px solid var(--line);}
+      div[data-testid="stTabs"] button[role="tab"] {border-radius:10px 10px 0 0; transition:background .18s ease;}
+      div[data-testid="stTabs"] button[role="tab"]:hover {background:#edf5ff;}
+      div[data-testid="stExpander"] {border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.76);}
+      @keyframes hero-in {from {opacity:0; transform:translateY(9px);} to {opacity:1; transform:translateY(0);}}
+      @media (prefers-reduced-motion: reduce) { *, *:before, *:after {animation:none !important; transition:none !important; scroll-behavior:auto !important;} }
     </style>
     """,
     unsafe_allow_html=True,
@@ -243,6 +262,7 @@ epochs = train_info.get("target_epochs", 3)
 st.markdown(
     f"""
     <div class="hero">
+      <p class="hero-kicker">Research demonstration · EPIC-KITCHENS-100</p>
       <h1>EgoRecover-JEPA</h1>
       <p>EPIC-KITCHENS-100 • V-JEPA 2 and 2.1 • attentive-probe demonstration</p>
       <p><b>Run:</b> {run_name}</p>
@@ -280,6 +300,22 @@ with overview_tab:
 with video_tab:
     st.subheader("Predictions on selected validation clips")
     st.caption("The app shows precomputed predictions and local video excerpts. It does not perform live model inference.")
+    st.markdown("#### Preview a clip")
+    st.info("Suggested source from the selected validation subset: **P05_09.MP4** — in Drive, look under `EgoRecover-JEPA/EPIC-KITCHENS/P05/videos/`. For a presentation, a short 8–15 second excerpt is easier to upload and play than the full 53-second source.")
+    uploaded_clip = st.file_uploader(
+        "Upload an MP4 excerpt for this session",
+        type=["mp4", "mov", "webm"],
+        key="clip_upload",
+        help="The uploaded file is only a media preview; it is not sent to GitHub and this app does not infer labels from it.",
+    )
+    upload_size_mb = None
+    if uploaded_clip is not None:
+        upload_size_mb = len(uploaded_clip.getbuffer()) / (1024 * 1024)
+        if upload_size_mb <= 60:
+            st.video(uploaded_clip)
+            st.caption(f"Previewing {uploaded_clip.name} · {upload_size_mb:.1f} MB · preview is temporary on the hosted app.")
+        else:
+            st.warning(f"{uploaded_clip.name} is {upload_size_mb:.1f} MB. To keep the free hosted app responsive, please upload a short compressed excerpt under 60 MB instead of the full source video.")
     if examples:
         titles = [str(row.get("title", row.get("example_id", f"Example {i + 1}"))) for i, row in enumerate(examples)]
         choice = st.selectbox("Choose an example", range(len(examples)), format_func=lambda i: titles[i])
@@ -308,8 +344,7 @@ with video_tab:
         st.info("No per-clip examples are included in the run metrics. Add a few short excerpts and their saved probe predictions below; no training rerun is needed.")
 
     with st.expander("Add a presentation clip and its saved predictions"):
-        st.caption("Upload a short excerpt that you are allowed to use, then enter the ground truth and predictions from your saved inference output. This form records labels; it does not run the model.")
-        uploaded_clip = st.file_uploader("Short MP4 excerpt", type=["mp4", "mov", "webm"], key="clip_upload")
+        st.caption("Enter ground truth and predictions from a saved inference output. This form records labels; it does not run the model. Saving writes a temporary copy to this app's current filesystem, which may disappear when the app rebuilds.")
         title = st.text_input("Example title", placeholder="Example 1 — verb and noun correct")
         video_id = st.text_input("EPIC video ID", placeholder="P08_17")
         narration_id = st.text_input("Narration ID (optional)")
@@ -329,7 +364,7 @@ with video_tab:
         obs_start = window_cols[0].text_input("Observed start time (s, optional)")
         obs_end = window_cols[1].text_input("Observed end time (s, optional)")
         gap = window_cols[2].text_input("Target gap (s, optional)", value="1.0")
-        if st.button("Save example locally", type="primary", disabled=uploaded_clip is None):
+        if st.button("Save example locally", type="primary", disabled=uploaded_clip is None or upload_size_mb is None or upload_size_mb > 60):
             slug = re.sub(r"[^a-zA-Z0-9_-]+", "_", title.strip()).strip("_") or "clip_example"
             local_media = APP_DIR / "user_media"
             local_media.mkdir(parents=True, exist_ok=True)
@@ -363,7 +398,7 @@ with video_tab:
             }
             existing["examples"].append(item)
             data_file.write_text(json.dumps(existing, indent=2), encoding="utf-8")
-            st.success(f"Saved clip and labels locally: {clip_name}. The files are excluded from Git by this app's ignore rules.")
+            st.success(f"Saved clip and labels to the current app filesystem: {clip_name}. This copy is temporary and excluded from GitHub.")
             st.rerun()
 
 with metrics_tab:
