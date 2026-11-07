@@ -1,0 +1,61 @@
+{
+  "run_name": "vjepa21_ek100_sunday_milestone_v1",
+  "profile": "sunday_milestone",
+  "status": "complete",
+  "repository": "https://github.com/facebookresearch/vjepa2",
+  "repository_commit": "204698b45b3712590f06245fbfba32d3be539812",
+  "official_config": "configs/eval_2_1/vitl-384/ek100.yaml",
+  "gpu": "Tesla T4",
+  "training": {
+    "target_epochs": 3,
+    "completed_epoch_cursor": 3,
+    "selected_train_videos": 12,
+    "selected_train_actions": 1179,
+    "one_optimizer_setting": {
+      "lr": 0.001,
+      "weight_decay": 0.001
+    },
+    "probe": "Meta AttentiveClassifier: 4 blocks, 16 heads, 3 learned queries",
+    "encoder_predictor_frozen": true
+  },
+  "validation": {
+    "complete": true,
+    "selected_val_videos": 8,
+    "selected_val_actions": 340,
+    "metrics": {
+      "verb": {
+        "top5_accuracy_percent": 61.470588235294116,
+        "class_mean_recall_at5_percent": 22.61904761904762,
+        "examples": 340,
+        "classes_seen": 21
+      },
+      "noun": {
+        "top5_accuracy_percent": 14.117647058823529,
+        "class_mean_recall_at5_percent": 8.19672131147541,
+        "examples": 340,
+        "classes_seen": 61
+      },
+      "action": {
+        "top5_accuracy_percent": 7.352941176470588,
+        "class_mean_recall_at5_percent": 2.547770700636943,
+        "examples": 340,
+        "classes_seen": 157
+      }
+    }
+  },
+  "protocol": {
+    "frames": 32,
+    "fps": 8,
+    "resolution": 384,
+    "val_horizon_seconds": 1.0,
+    "val_sampler_anchor": "Meta released code anchors on stop_frame and subtracts 1 second",
+    "precision": "FP16 T4/Kaggle adaptation"
+  },
+  "limitations": [
+    "This is a selected video subset, not a full EPIC-KITCHENS-100 benchmark.",
+    "The run used one optimizer setting and three epochs, not Meta's full sweep and schedule.",
+    "The saved training loss history may not include earlier resumed-session records.",
+    "No per-example prediction logits were saved in the aggregate validation log."
+  ]
+}
+
